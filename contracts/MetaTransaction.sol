@@ -2,7 +2,7 @@
 // OpenZeppelin Contracts (last updated v4.8.0) (metatx/MinimalForwarder.sol)
 // Modified by Phala Network, 2023
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
