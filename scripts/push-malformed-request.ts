@@ -2,13 +2,13 @@ import { ethers } from "hardhat";
 import "dotenv/config";
 
 async function main() {
-  const TestLensOracle = await ethers.getContractFactory("TestLensOracle");
+  const LensOracleStatMinter = await ethers.getContractFactory("LensOracleStatMinter");
 
   const [deployer] = await ethers.getSigners();
   const { name: network } = await ethers.provider.getNetwork();
 
   const consumerSC = (network == 'polygon') ? process.env['POLYGON_MAINNET_CONSUMER_SC'] : process.env['POLYGON_MUMBAI_CONSUMER_SC'];
-  const oracle = await TestLensOracle.attach(consumerSC ?? "");
+  const oracle = await LensOracleStatMinter.attach(consumerSC ?? "");
   await Promise.all([
     oracle.deployed(),
   ])

@@ -2,13 +2,14 @@ import { ethers } from "hardhat";
 import "dotenv/config";
 
 async function main() {
-  const TestLensOracle = await ethers.getContractFactory("TestLensOracle");
+  const LensOracleStatMinter = await ethers.getContractFactory("LensOracleStatMinter");
 
   const [deployer] = await ethers.getSigners();
 
   console.log('Deploying...');
   const attestor = process.env['LENSAPI_ORACLE_ENDPOINT'] ?? deployer.address;  // When deploy for real e2e test, change it to the real attestor wallet.
-  const oracle = await TestLensOracle.deploy(attestor);
+  const nftContract = process.env['NFT_COLLECTION_ADDRESS'] ?? '0x0';
+  const oracle = await LensOracleStatMinter.deploy(attestor, nftContract);
   await oracle.deployed();
   console.log('Deployed', {
     oracle: oracle.address,
