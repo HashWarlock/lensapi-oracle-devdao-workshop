@@ -2,19 +2,19 @@ import { ethers } from "hardhat";
 import "dotenv/config";
 
 async function main() {
-  const LensOracleStatMinter = await ethers.getContractFactory("LensOracleStatMinter");
+  const LensTreasureHunt = await ethers.getContractFactory("LensTreasureHunt");
 
   const [deployer] = await ethers.getSigners();
   const { name: network } = await ethers.provider.getNetwork();
 
   const consumerSC = (network == 'polygon') ? process.env['POLYGON_MAINNET_CONSUMER_SC'] : process.env['POLYGON_MUMBAI_CONSUMER_SC'];
-  const oracle = await LensOracleStatMinter.attach(consumerSC ?? "");
+  const consumer = await LensTreasureHunt.attach(consumerSC ?? "");
   await Promise.all([
-    oracle.deployed(),
+    consumer.deployed(),
   ])
 
   console.log('Pushing a malformed request...');
-  await oracle.connect(deployer).malformedRequest("0x01");
+  await consumer.connect(deployer).malformedRequest("0x01");
   console.log('Done');
 }
 
