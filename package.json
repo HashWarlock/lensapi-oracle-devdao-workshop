@@ -1,8 +1,22 @@
 {
-  "name": "lensapi-oracle-consumer-contract",
+  "name": "lensapi-oracle-devdao-workshop",
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "compile": "hardhat compile",
+    "clean": "hardhat clean",
+    "test-deploy": "hardhat run --network mumbai ./scripts/deploy-test.ts",
+    "main-deploy": "hardhat run --network polygon ./scripts/deploy-test.ts",
+    "test-set-attestor": "hardhat run --network mumbai ./scripts/set-attestor.ts",
+    "main-set-attestor": "hardhat run --network polygon ./scripts/set-attestor.ts",
+    "test-push-request": "npx hardhat run --network mumbai ./scripts/push-request.ts",
+    "main-push-request": "npx hardhat run --network polygon ./scripts/push-request.ts",
+    "test-push-malformed-request": "npx hardhat run --network mumbai ./scripts/push-malformed-request.ts",
+    "main-push-malformed-request": "npx hardhat run --network polygon ./scripts/push-malformed-request.ts",
+    "test-verify": "npx hardhat verify --network mumbai --constructor-args arguments.ts",
+    "main-verify": "npx hardhat verify --network polygon --constructor-args arguments.ts"
+  },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
     "@ethersproject/providers": "^5.4.7",
@@ -11,9 +25,6 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@nomiclabs/hardhat-ethers": "^2.0.0",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
-    "@openzeppelin/contracts": "^4.1.0",
-    "@openzeppelin/contracts-upgradeable": "^4.1.0",
-    "@openzeppelin/hardhat-upgrades": "^1.8.2",
     "@typechain/ethers-v5": "^10.1.0",
     "@typechain/hardhat": "^6.1.2",
     "@types/chai": "^4.2.0",

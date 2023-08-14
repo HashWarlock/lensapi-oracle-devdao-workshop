@@ -5,10 +5,9 @@ async function main() {
     const LensTreasureHunt = await ethers.getContractFactory("LensTreasureHunt");
 
     const [deployer] = await ethers.getSigners();
-    const { name: network } = await ethers.provider.getNetwork();
 
-    const consumerSC = (network == 'polygon') ? process.env['POLYGON_MAINNET_CONSUMER_SC'] : process.env['POLYGON_MUMBAI_CONSUMER_SC'];
-    const consumer = await LensTreasureHunt.attach(consumerSC ?? "");
+    const consumerSC = process.env['CONSUMER_CONTRACT_ADDRESS'] || "";
+    const consumer = LensTreasureHunt.attach(consumerSC);
     await Promise.all([
         consumer.deployed(),
     ])
