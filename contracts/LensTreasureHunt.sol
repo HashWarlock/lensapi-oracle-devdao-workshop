@@ -6,19 +6,12 @@ import "./PhatRollupAnchor.sol";
 import { ITokenERC721 } from "./interfaces/ITokenERC721.sol";
 
 contract LensTreasureHunt is PhatRollupAnchor, Ownable {
-    // Minimum amount to pay to dig a Lens Profile.
     uint256 public digCost;
-    // Mapping of numbers to Lens Treasure Hunt NFT contract addresses.
     mapping(uint => ITokenERC721) public lensTreasureHuntNfts;
-    // Mapping of numbers to NFT IPFS URIs.
     mapping(uint => string) private _lensTreasureHuntNftsURIs;
-    // Mapping of requests to user address.
     mapping(uint => address) public requestsByUsers;
-    // Array of users that qualify for final treasure payout.
     address[5] public treasureRecipients;
-    // bool to determine if Lens Treasure Hunt is over.
-    bool public isTreasureHuntActive;
-    // Owner's cut of the treasure hunt.
+    uint8 public lensTreasureHuntNftIdZerosLeft;
     uint256 public ownersCut;
 
     event ResponseReceived(uint reqId, string pair, uint256 value);
@@ -51,7 +44,7 @@ contract LensTreasureHunt is PhatRollupAnchor, Ownable {
         for (uint i = 0; i < 5; i++) {
             treasureRecipients[i] = address(0);
         }
-        isTreasureHuntActive = true;
+        lensTreasureHuntNftIdZerosLeft = 5;
     }
 
     function setAttestor(address phatAttestor) public {
@@ -73,14 +66,11 @@ contract LensTreasureHunt is PhatRollupAnchor, Ownable {
 
     function dig(string calldata profileId) public payable nonReentrant {
         require(msg.value >= digCost, "Sent MATIC is below the minimum required");
-        // Validate profileId
         bytes memory bytesProfileId = bytes(profileId);
         require(bytesProfileId.length > 2, "Lens Profile ID invalid");
         require(bytesProfileId[0] == "0" && bytesProfileId[1] == "x", "Lens Profile ID invalid");
         address sender = msg.sender;
-        // assemble the request
         uint id = nextRequest;
-        // Pay owner half of digCost
         uint256 _ownersCut = msg.value / 2;
         if (_ownersCut > 0) {
             ownersCut += _ownersCut;
@@ -89,14 +79,6 @@ contract LensTreasureHunt is PhatRollupAnchor, Ownable {
         requestsByUsers[id] = sender;
         _pushMessage(abi.encode(id, profileId));
         emit NewDigRequest(id, profileId);
-        nextRequest += 1;
-    }
-
-    // For test
-    function malformedRequest(bytes calldata malformedData) public {
-        uint id = nextRequest;
-        requests[id] = "malformed_req";
-        _pushMessage(malformedData);
         nextRequest += 1;
     }
 
@@ -112,8 +94,9 @@ contract LensTreasureHunt is PhatRollupAnchor, Ownable {
             try lensTreasureHuntNftAddress.mintTo(requester, _lensTreasureHuntNftsURIs[data]) returns (uint256 nftId) {
                 if (nftId == 0) {
                     treasureRecipients[data - 1] = requester;
+                    digCost += (1 ether/10_000);
+                    lensTreasureHuntNftIdZerosLeft -= 1;
                     emit NewTreasureRecipient(requester);
-                    digCost += 1;
                     emit DigCostIncrease(digCost);
                 }
                 emit ResponseReceived(id, requests[id], data);
@@ -126,20 +109,18 @@ contract LensTreasureHunt is PhatRollupAnchor, Ownable {
                 delete requestsByUsers[id];
             }
         } else if (respType == TYPE_ERROR) {
-            emit ErrorReceived(id, requests[id], data);
             delete requests[id];
         }
     }
 
     function rewardTreasureRecipients() public {
-        require(digCost > 5, "Not all treasure has been found! Keep digging!");
+        require(lensTreasureHuntNftIdZerosLeft < 1, "Not all treasure has been found! Keep digging!");
         uint256 split = address(this).balance / 5;
         for (uint i = 0; i < 5; i++) {
             payable(treasureRecipients[i]).transfer(split);
         }
         emit TreasureRecipientsRewarded(split);
         emit TreasureHuntOfficiallyEnded();
-        isTreasureHuntActive = false;
         digCost = 0;
     }
 
