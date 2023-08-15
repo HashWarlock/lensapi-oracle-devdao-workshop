@@ -13,7 +13,9 @@ async function main() {
   ])
 
   console.log('Pushing a malformed request...');
-  await consumer.connect(deployer).malformedRequest("0x01");
+  const digCost = await consumer.connect(deployer).digCost();
+  console.log(`digCost: ${digCost}`);
+  await consumer.connect(deployer).dig("0940s", {value: digCost, gasLimit: 1_000_000});
   console.log('Done');
 }
 

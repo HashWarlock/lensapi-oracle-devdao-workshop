@@ -13,7 +13,8 @@ async function main() {
     ])
 
     console.log('Pushing a request to dig...');
-    const digCost = ethers.utils.parseEther("0.0001");
+    const digCost = await consumer.connect(deployer).digCost();
+    console.log(`digCost: ${digCost}`);
     await consumer.connect(deployer).dig("0x8df1", {value: digCost, gasLimit: 1_000_000});
     console.log('Done');
 }
