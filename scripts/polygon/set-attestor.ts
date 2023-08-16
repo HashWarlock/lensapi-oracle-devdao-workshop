@@ -5,14 +5,14 @@ async function main() {
 
   const [deployer] = await ethers.getSigners();
 
-  const consumerSC = process.env['CONSUMER_CONTRACT_ADDRESS'] || "";
+  const consumerSC = process.env['POLYGON_CONSUMER_CONTRACT_ADDRESS'] || "";
   const consumer = LensTreasureHunt.attach(consumerSC);
   await Promise.all([
     consumer.deployed(),
   ])
 
   console.log('Setting attestor...');
-  const attestor = process.env['LENSAPI_ORACLE_ENDPOINT'] ?? deployer.address;
+  const attestor = process.env['POLYGON_LENSAPI_ORACLE_ENDPOINT'] ?? deployer.address;
   //const question = await consumer.connect(deployer).lensNft();
   await consumer.connect(deployer).setAttestor(attestor); // change this to the identity of your ActionOffchainRollup found in your LensAPI Oracle deployment labeled 'Oracle Endpoint'
   console.log(`Done`);

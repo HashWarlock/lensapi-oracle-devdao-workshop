@@ -1,22 +1,21 @@
 import { ethers } from "hardhat";
 import "dotenv/config";
-
 async function main() {
   const LensTreasureHunt = await ethers.getContractFactory("LensTreasureHunt");
 
   const [deployer] = await ethers.getSigners();
 
-  const consumerSC = process.env['CONSUMER_CONTRACT_ADDRESS'] || "";
+  const consumerSC = process.env['MUMBAI_CONSUMER_CONTRACT_ADDRESS'] || "";
   const consumer = LensTreasureHunt.attach(consumerSC);
   await Promise.all([
     consumer.deployed(),
   ])
 
-  console.log('Pushing a malformed request...');
-  const digCost = await consumer.connect(deployer).digCost();
-  console.log(`digCost: ${digCost}`);
-  await consumer.connect(deployer).dig("0940s", {value: digCost, gasLimit: 1_000_000});
-  console.log('Done');
+  console.log('Setting attestor...');
+  const attestor = process.env['MUMBAI_LENSAPI_ORACLE_ENDPOINT'] ?? deployer.address;
+  //const question = await consumer.connect(deployer).lensNft();
+  await consumer.connect(deployer).setAttestor(attestor); // change this to the identity of your ActionOffchainRollup found in your LensAPI Oracle deployment labeled 'Oracle Endpoint'
+  console.log(`Done`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
