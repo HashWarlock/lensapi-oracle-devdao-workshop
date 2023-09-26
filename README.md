@@ -16,8 +16,9 @@
 - [Closing](#closing)
 
 ## Overview
-This project represents a basic Polygon Consumer Contract that is compatible with a deployed LensAPI Oracle via [Phat Bricks UI](https://bricks.phala.network).
-![](./assets/basic-lensapi-oracle.png)
+This project represents a Lens Treasure Hunt Consumer Contract that is compatible with a deployed LensAPI Oracle via [Phat Bricks UI](https://bricks.phala.network).
+![](./assets/LensAPITreasureHunt.png)
+For more info on the design, check out this [blog post](https://medium.com/@hashwarlock/lensapi-oracle-lens-treasure-hunt-7e1ad93b5a29).
 
 ## Prerequisites
 - Active deployed LensAPI Oracle Blueprint via [Phat Bricks](https://bricks.phala.network)
